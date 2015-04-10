@@ -162,7 +162,6 @@
 `kobject_uevent()`产生`uevent`事件`(/lib/kobject_uevent.c)`，事件的部分信息通过环境变量传递，如`$ACTION, $DEVPATH, $SUBSYSTEM`等，产生的`uevent`先由`netlink_broadcast_filtered()`发出，最后调用`uevent_helper[]`所指定的程序来处理。  
 在`linux`中，`uevent_helper[]`里默认指定`”/sbin/hotplug”`，但可以通过`/sys/kernel/uevent_helper（kernel/ksysfs.c）`或`/proc/kernel/uevent_helper(kernel/sysctl.c)`来修改成指定的程序。
 在新`OpenWRT`中，并不使用`user_helper[]`指定程序来处理`uevent（/sbin/hotplug`不存在，在以前版本中存在），而是通过`PF_NETLINK`套接字来获取来自内核空间的`uevent`。  
-
 2.  **用户空间监听uevent**
 
 在`proc/plug/hotplug.c`中，创建一个`PF_NETLINK`套接字来监听内核`netlink_broadcast_filtered()`发出的`uevent`。收到`uevent`之后，在根据`/etc/hotplug.json`里的描述，定位到对应的执行函数来处理。  
